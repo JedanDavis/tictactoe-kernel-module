@@ -1,0 +1,52 @@
+Tic-Tac-Toe Linux kernel module
+This is a simple Linux kernel module that implements a game of Tic-Tac-Toe. It exposes a character device /dev/tiktactoe that allows users to interact with the game by sending commands and receiving messages. The game is played by two players, X and O, who take turns marking spaces in a 3x3 grid. The goal is to get three in a row, either horizontally, vertically, or diagonally.
+
+Installation
+
+Compile the module by running the following command:
+make
+
+Install the module by running the following command with root privileges:
+insmod inspirational.ko
+
+Verify that the module was loaded successfully by checking the kernel message log:
+dmesg
+
+Usage
+
+After loading the module, you can interact with the game by reading from and writing to the /dev/tiktactoe device file. Here are some example commands:
+
+echo "COMMAND" > /dev/tiktactoe
+
+The following commands are supported:
+TURN A 1: This command makes a move in the first row and first column of the board. The first argument is a letter A, B, or C that indicates the column, and the second argument is a number 1, 2, or 3 that indicates the row. This command is used by player X to make a move.
+RESET: This command resets the board and starts a new game.
+BOARD: This command prints the current state of the board.
+Any other command will return an error message.
+After sending a command, you can read from the device file to receive a message from the game. The message will indicate whether the move was valid, who won the game, or whether the game is over. The message can be printed to the console using the cat command:
+
+sudo cat /dev/tiktactoe
+
+Output
+When you read from the /dev/tiktactoe device, you will receive a message containing the current state of the game board or an error message if there was a problem with your command  or an appropriate message. The following messages can be returned:
+
+Invalid move! Please enter a valid move.: The move you specified was not valid. This can happen if you specify a row or column that is outside the bounds of the game board or if you try to place your X in a square that is already occupied.
+Game over! It's a tie!: The game has ended in a tie.
+Congratulations, Player X has won!: Player X has won the game.
+OK: RESET.
+Invalid command! Please enter a valid command.: The command you entered was not recognized.
+Congratulations, Player O has won!: Player O has won the game.
+[Current board state]: The current state of the game board, where each square is represented by a dash, X, or O (when the BOARD command is run).
+
+To play a game, the RESET command should be run first to reset the board. Then, the TURN command should be run to make a move. The game will alternate between player X and player O until the game is over. After each move, the BOARD command can be run to see the current state of the board. The game is over when one player has three in a row or when the board is full and there is no winner. If the game is over, the RESET command should be run to start a new game.
+
+Uninstallation
+To uninstall the module, follow the steps below:
+
+Open a terminal window and navigate to the directory where the module was installed.
+
+Unload the module by running the following command with root privileges:
+rmmod inspirational
+
+Verify that the module was unloaded successfully by checking the kernel message log:
+dmesg
